@@ -1380,6 +1380,22 @@ def admin_delete_product(product_id):
     flash('Product removed from landing page.', 'success')
     return redirect(url_for('admin_products'))
 
+@app.route('/admin/settings', methods=['GET', 'POST'])
+@admin_required
+def admin_settings():
+    settings = get_payment_settings()
+    if request.method == 'POST':
+        settings['zinipay_api_key'] = request.form.get('zinipay_api_key', '')
+        settings['zinipay_enabled'] = 'zinipay_enabled' in request.form
+        settings['tutorial_video_url'] = request.form.get('tutorial_video_url', '')
+        settings['bypass_download_url'] = request.form.get('bypass_download_url', '')
+        settings['bypass_filename'] = request.form.get('bypass_filename', '')
+        settings['bypass_file_size'] = request.form.get('bypass_file_size', '')
+        save_dict_json(SETTINGS_FILE, settings)
+        flash('Settings updated successfully.', 'success')
+        return redirect(url_for('admin_settings'))
+    return render_template('admin_settings.html', settings=settings)
+
 # --- Localization (IP Country Geo Tracking) ---
 
 TRANSLATIONS = {
@@ -1790,6 +1806,7 @@ import psutil
 
 # Get MongoDB collection for bots
 bots_col = db['bots']
+users_col = db['users']
 
 @app.route('/dashboard/discord-bot', methods=['GET', 'POST'])
 @login_required
