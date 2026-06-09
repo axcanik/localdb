@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .trial-uids-list {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    .trial-uid-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    
+    .trial-uid-row:last-child {
+        border-bottom: none;
+    }
+
+    .btn-quick-del {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ff8888;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-quick-del:hover {
+        background: #ef4444;
+        color: white;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    .portal-details {
+        cursor: pointer;
+        color: #00ff88;
+        font-size: 12px;
+        font-weight: bold;
+        outline: none;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="page-top">
+    <div>
+        <h1 class="page-title">{{ t.free_portals }}</h1>
+        <p class="page-sub">Manage your unique 3-day free access links.</p>
+    </div>
+</div>
+
+<div class="settings-form--bot" style="grid-template-columns: 1fr;">
+    <div class="card">
+        <div class="card-head" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+            <span class="card-title">{{ t.free_portals }} (3-Days)</span>
+            <form action="{{ url_for('generate_portal') }}" method="POST" style="margin:0;">
+                <button type="submit" class="btn-primary" style="padding: 6px 12px; font-size: 12px; background: #3b82f6;">+ Generate Link</button>
+            </form>
+        </div>
+        <p class="card-desc" style="margin-top: 15px;">{{ t.portal_desc }}</p>
+
+        <div class="table-wrap" style="margin-top: 15px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL Link</th>
+                        <th>{{ t.status }}</th>
+                        <th>{{ t.claimed }}</th>
+                        <th>{{ t.action }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in portals %}
+                    <tr>
+                        <td class="uid-mono" style="font-size:12px; font-family: monospace;">
+                            <a href="{{ request.host_url }}free/{{ p.token }}" target="_blank" style="color: #60a5fa; text-decoration: none; display: inline-block; transition: var(--transition);">
+                                {{ request.host_url }}free/{{ p.token }}
+                            </a>
+                            {% if p.time_left %}
+                                {% if p.is_portal_expired %}
+                                <span class="badge badge-red" style="padding: 1px 4px; font-size: 9px; margin-left: 5px;">EXPIRED</span>
+                                {% else %}
+                                <span class="badge badge-green" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); padding: 1px 4px; font-size: 9px; margin-left: 5px;">{{ p.time_left }}</span>
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if p.registered_uids %}
+                            <details class="portal-details-wrap" style="margin-top: 8px;">
+                                <summary class="portal-details">👁 View {{ t.registered_uids }} ({{ p.registered_uids|length }})</summary>
+                                <div class="trial-uids-list">
+                                    {% for tu in p.registered_uids %}
+                                    <div class="trial-uid-row">
+                                        <div>
+                                            <span style="font-family: monospace; color: #fff; font-weight: bold;">{{ tu.uid }}</span>
+                                            {% if tu.is_expired %}
+                                            <span class="badge badge-red" style="padding: 1px 4px; font-size: 9px; margin-left: 5px;">EXPIRED</span>
+                                            {% else %}
+                                            <span class="badge badge-green" style="background: rgba(0, 255, 136, 0.1); color: #00ff88; border-color: rgba(0, 255, 136, 0.3); padding: 1px 4px; font-size: 9px; margin-left: 5px;">ACTIVE</span>
+                                            {% endif %}
+                                        </div>
+                                        <form action="{{ url_for('delete_uid', uid=tu.uid) }}" method="POST" style="margin:0;">
+                                            <input type="hidden" name="redirect_to" value="portals">
+                                            <button type="submit" class="btn-quick-del" onclick="return confirm('Remove UID {{ tu.uid }}?')">Remove</button>
+                                        </form>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </details>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if p.is_active %}
+                            <span class="badge badge-green" style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 8px; border-radius: 4px;">ON</span>
+                            {% else %}
+                            <span class="badge badge-red" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 2px 8px; border-radius: 4px;">OFF</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: bold;">{{ p.uses }}</td>
+                        <td>
+                            <div style="display:flex; gap:5px; justify-content: flex-end;">
+                                <form action="{{ url_for('toggle_portal', token=p.token) }}" method="POST" style="margin:0;">
+                                    <button type="submit" class="btn-xs" style="padding:4px 8px; cursor:pointer; background: {{ '#ef4444' if p.is_active else '#3b82f6' }}; color: white; border: none; border-radius: 3px;">
+                                        {{ 'Turn OFF' if p.is_active else 'Turn ON' }}
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('delete_portal', token=p.token) }}" method="POST" style="margin:0;">
+                                    <button type="submit" class="btn-xs" style="background:#444; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;" onclick="return confirm('Delete this portal link?')">Del</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:20px; color:var(--tx3);">No portals generated yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .uid-cell {
+        max-width: 180px;
+        overflow: hidden;
+    }
+
+    .uid-mono {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 700;
+        color: #00ff88;
+        text-shadow: 0 0 5px rgba(0, 255, 136, 0.15);
+        word-break: break-all;
+        line-height: 1.4;
+    }
+
+    .uid-note {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 3px;
+    }
+
+    tbody tr {
+        transition: background 0.15s ease;
+    }
+
+    tbody tr:hover td {
+        background: rgba(0, 255, 136, 0.02);
+    }
+
+    .badge-green {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+
+    .badge-blue {
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .row-expired td {
+        opacity: 0.45;
+    }
+
+    .btn-quick-del {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ff8888;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-quick-del:hover {
+        background: #ef4444;
+        color: white;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    .card-head {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-purge-trials {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.6);
+        color: #ff6b6b;
+        padding: 8px 16px;
+        border-radius: var(--radius-xs);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 800;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-purge-trials:hover {
+        background: #ef4444;
+        color: #fff;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        transform: translateY(-1px);
+    }
+</style>
+
+<div class="page-top">
+    <div>
+        <h1 class="page-title" style="color: #00ff88; text-shadow: 0 0 10px rgba(0, 255, 136, 0.2);">{{ t.trial_title }}</h1>
+        <p class="page-sub">{{ t.trial_desc }}</p>
+    </div>
+    <div style="display:flex; gap:12px; align-items:center;">
+        {% if uids|length > 0 %}
+        <form action="{{ url_for('purge_trials') }}" method="POST" style="margin:0;">
+            <button type="submit" class="btn-purge-trials" onclick="return confirm('WARNING: Are you sure you want to remove ALL {{ uids|length }} trial UIDs instantly?')">
+                💥 {{ t.remove_all }}
+            </button>
+        </form>
+        {% endif %}
+        <span class="stat-pill" style="border-color: rgba(0, 255, 136, 0.3); color: #00ff88;">● {{ uids|length }} {{ t.claimed }}</span>
+    </div>
+</div>
+
+<div class="settings-form--bot" style="grid-template-columns: 1fr;">
+
+    <!-- Trial UIDs List -->
+    <div class="card" style="padding:0; border-color: rgba(0, 255, 136, 0.2);">
+        <div class="card-head"
+            style="padding: 20px 24px; border-bottom: 1px solid rgba(0, 255, 136, 0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px;">
+            <span class="card-title" style="color: #00ff88;">{{ t.trial_title }}</span>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <input type="text" id="trialSearchInput" placeholder="🔍 Search Trial UID or Note..." style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(0, 255, 136, 0.25); color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 12.5px; outline: none; width: 220px; transition: all 0.2s;" onfocus="this.style.borderColor='#00ff88'; this.style.boxShadow='0 0 8px rgba(0, 255, 136, 0.15)';" onblur="this.style.borderColor='rgba(0, 255, 136, 0.25)'; this.style.boxShadow='none';">
+                <span class="tag tag-gray" id="trialEntriesCountTag" style="border-color: rgba(0, 255, 136, 0.2); color: #00ff88;">{{ uids|length }} {{ t.trial_uids }}</span>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ t.game_uid }}</th>
+                        <th>{{ t.status }}</th>
+                        <th>{{ t.duration }}</th>
+                        <th>{{ t.note }}</th>
+                        <th style="text-align: right;">{{ t.action }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in uids %}
+                    <tr class="{{ 'row-expired' if item.is_expired else '' }}">
+                        <td class="uid-cell">
+                            <div class="uid-mono">{{ item.uid }}</div>
+                        </td>
+                        <td>
+                            {% if item.is_expired %}
+                            <span class="badge badge-red">EXPIRED</span>
+                            {% else %}
+                            <span class="badge badge-green">ACTIVE</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge badge-blue">{{ item.expiry_date.split(' ')[0] }}</span>
+                        </td>
+                        <td style="color: var(--tx3); font-size:12px;">{{ item.note }}</td>
+                        <td style="text-align: right;">
+                            <form action="{{ url_for('delete_uid', uid=item.uid) }}" method="POST" style="margin:0; display:inline-block;">
+                                <input type="hidden" name="redirect_to" value="trials">
+                                <button type="submit" class="btn-quick-del" onclick="return confirm('Revoke trial for {{ item.uid }}?')">1-Click Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:50px; color:var(--tx3);">
+                            No active Trial UIDs registered.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('trialSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const uidCell = row.querySelector('.uid-cell');
+                const noteCell = row.querySelector('td:nth-child(4)');
+                
+                let text = '';
+                if (uidCell) text += uidCell.textContent.toLowerCase() + ' ';
+                if (noteCell) text += noteCell.textContent.toLowerCase();
+                
+                if (text && text.includes(query)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else if (uidCell) {
+                    row.style.display = 'none';
+                }
+            });
+            
+            const countTag = document.getElementById('trialEntriesCountTag');
+            if (countTag) {
+                countTag.textContent = `${visibleCount} entries`;
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

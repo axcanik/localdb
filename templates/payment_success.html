@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-wrap page">
+    <div class="auth-card auth-card--standalone" style="max-width: 480px; border-color: rgba(16, 185, 129, 0.45); box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);">
+        <div style="width: 72px; height: 72px; background: rgba(16, 185, 129, 0.12); border: 2px solid var(--green); color: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px auto; text-shadow: 0 0 10px rgba(16,185,129,0.3);">
+            ✓
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div class="auth-title" style="color: #fff;">Payment Successful!</div>
+            <div class="auth-sub" style="color: var(--green);">Your subscription is now active.</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 18px; margin-bottom: 24px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 8px;">Your Account Details</div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px; color: var(--tx2);">Username:</span>
+                <span style="font-size: 13.5px; font-weight: 700; color: #fff; font-family: var(--font-mono);">{{ username }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px; color: var(--tx2);">Password:</span>
+                <span style="font-size: 13.5px; font-weight: 700; color: #fff;">****** (As chosen)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px; color: var(--tx2);">Product:</span>
+                <span style="font-size: 13.5px; font-weight: 700; color: var(--r4);">{{ product_name }}</span>
+            </div>
+        </div>
+
+        <div style="background: rgba(59, 130, 246, 0.08); border: 1.5px dashed rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: center;">
+            <div style="font-size: 13px; color: #93c5fd; font-weight: 700; margin-bottom: 4px;">🚀 What to do next?</div>
+            <div style="font-size: 12.5px; color: var(--tx2); line-height: 1.5;">
+                Log in using your chosen credentials, download the bypass tool, and bind your game UID to activate security.
+            </div>
+        </div>
+
+        <a href="{{ url_for('login') }}" class="btn-primary" style="padding: 14px 28px; width: 100%; display: block; text-decoration: none; text-align: center; font-weight: 800; font-size: 14px; border-radius: 8px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2);">
+            Login to Client Area
+        </a>
+    </div>
+</div>
+{% endblock %}

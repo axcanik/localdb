@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-top page">
+    <div class="admin-users-brand" style="display: flex; align-items: center; gap: 15px;">
+        <img src="{{ url_for('static', filename='he.png') }}" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px; box-shadow: var(--shadow-r);">
+        <div>
+            <h1 class="page-title page-title--solo">Administration Panel</h1>
+            <p class="page-sub">Manage resellers, client subscriptions, and landing page products from a central cockpit</p>
+        </div>
+    </div>
+</div>
+
+<!-- Beautiful Tab Navigation -->
+<div class="admin-tabs" style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; flex-wrap: wrap;">
+    <a href="{{ url_for('admin_users') }}" class="admin-tab-link" style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 8px; text-decoration: none; color: var(--tx3); background: rgba(255,255,255,0.02); border: 1.5px solid rgba(255,255,255,0.06); font-weight: 700; font-size: 13.5px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.06)'; this.style.color='var(--tx3)';">
+        👥 Resellers Manager
+    </a>
+    <a href="{{ url_for('admin_clients') }}" class="admin-tab-link" style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 8px; text-decoration: none; color: var(--tx3); background: rgba(255,255,255,0.02); border: 1.5px solid rgba(255,255,255,0.06); font-weight: 700; font-size: 13.5px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.06)'; this.style.color='var(--tx3)';">
+        💻 Clients Manager
+    </a>
+    <a href="{{ url_for('admin_products') }}" class="admin-tab-link" style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 8px; text-decoration: none; color: var(--tx3); background: rgba(255,255,255,0.02); border: 1.5px solid rgba(255,255,255,0.06); font-weight: 700; font-size: 13.5px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.06)'; this.style.color='var(--tx3)';">
+        🛒 Products Manager
+    </a>
+    <a href="{{ url_for('admin_settings') }}" class="admin-tab-link active" style="display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 8px; text-decoration: none; color: #fff; background: rgba(220, 38, 38, 0.15); border: 1.5px solid rgba(220, 38, 38, 0.45); font-weight: 700; font-size: 13.5px; transition: all 0.2s; box-shadow: 0 0 15px rgba(220,38,38,0.1);">
+        ⚙ Payment Settings
+    </a>
+</div>
+
+<!-- Admin Stats Cards & Quick Action Panel -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+    <div class="card" style="padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-left: 4px solid var(--blue);">
+        <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--tx3); text-transform: uppercase; margin-bottom: 4px;">Total Resellers</div>
+            <div style="font-size: 32px; font-weight: 900; color: #fff;">{{ resellers_count }}</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.25;">👥</div>
+    </div>
+    
+    <div class="card" style="padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-left: 4px solid var(--green);">
+        <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--tx3); text-transform: uppercase; margin-bottom: 4px;">Total Clients</div>
+            <div style="font-size: 32px; font-weight: 900; color: #fff;">{{ clients_count }}</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.25;">💻</div>
+    </div>
+    
+    <div class="card" style="padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-left: 4px solid var(--r4);">
+        <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--tx3); text-transform: uppercase; margin-bottom: 4px;">Landing Products</div>
+            <div style="font-size: 32px; font-weight: 900; color: #fff;">{{ products_count }}</div>
+        </div>
+        <div style="font-size: 32px; opacity: 0.25;">🛒</div>
+    </div>
+    
+    <div class="card" style="padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 10px; background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(0,0,0,0) 100%); border: 1.5px dashed rgba(220, 38, 38, 0.35);">
+        <div style="font-size: 12.5px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px;">
+            📢 Manage Landing Products
+        </div>
+        <a href="{{ url_for('admin_products') }}" class="btn-primary" style="padding: 8px 16px; font-size: 12.5px; text-decoration: none; text-align: center; border-radius: 6px;">
+            + Add / Edit Products
+        </a>
+    </div>
+</div>
+
+<div class="settings-form--bot page" style="--i:2; max-width: 650px; margin: 0 auto; display: block;">
+    <!-- ZiniPay Configurations Card -->
+    <div class="card card--settings" style="padding: 30px;">
+        <div class="card-head" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
+            <h2 class="card-title" style="color: #fff; font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                💳 ZiniPay Gateway Settings
+            </h2>
+        </div>
+        
+        <p class="card-desc" style="color: var(--tx3); font-size: 13.5px; line-height: 1.6; margin-bottom: 25px;">
+            Configure your ZiniPay merchant account credentials to enable fully automated bKash, Nagad, and Rocket payments on your landing page. Once enabled, buyers can pay in BDT, and their Client or Reseller account will be provisioned instantly.
+        </p>
+        
+        <form action="{{ url_for('admin_settings') }}" method="POST" enctype="multipart/form-data" class="settings-form">
+            
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                    ZiniPay Brand API Key
+                </label>
+                <input type="password" name="zinipay_api_key" value="{{ settings.zinipay_api_key }}" class="form-input" placeholder="e.g. zini_api_xxxxxxxxx" style="font-family: var(--font-mono); font-size: 13px;" required autocomplete="off">
+                <div style="font-size: 11px; color: var(--tx3); margin-top: 6px;">
+                    Find this Brand Key in your <a href="https://zinipay.com" target="_blank" style="color: var(--blue); text-decoration: underline;">ZiniPay Dashboard</a> under the Brands tab.
+                </div>
+            </div>
+
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                    Tutorial Video Embed URL
+                </label>
+                <input type="text" name="tutorial_video_url" value="{{ settings.tutorial_video_url }}" class="form-input" placeholder="e.g. https://www.youtube.com/embed/dQw4w9WgXcQ" style="font-family: var(--font-mono); font-size: 13px;" required autocomplete="off">
+                <div style="font-size: 11px; color: var(--tx3); margin-top: 6px;">
+                    Enter the YouTube embed link for the Client area tutorial (format: <strong>https://www.youtube.com/embed/VIDEO_ID</strong>).
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div style="border-top: 1px solid var(--border); margin: 30px 0; opacity: 0.8;"></div>
+            
+            <h3 style="font-family: var(--font-display); font-size: 16px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                📥 Bypass Download File Settings
+            </h3>
+
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                    Upload New Bypass Module File (ZIP/RAR/EXE)
+                </label>
+                <input type="file" name="bypass_file" class="form-input" style="font-size: 13px; background: rgba(0,0,0,0.2);">
+                <div style="font-size: 11px; color: var(--tx3); margin-top: 6px;">
+                    Uploading a new file will automatically save it on the server and calculate the size label. Current file: <strong>{{ settings.bypass_filename }}</strong> ({{ settings.bypass_file_size }}).
+                </div>
+            </div>
+
+            <div class="field" style="margin-bottom: 24px;">
+                <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                    Or Custom Download URL
+                </label>
+                <input type="text" name="bypass_download_url" value="{{ settings.bypass_download_url }}" class="form-input" placeholder="e.g. https://example.com/AXC_Bypass.zip" style="font-family: var(--font-mono); font-size: 13px;" autocomplete="off">
+                <div style="font-size: 11px; color: var(--tx3); margin-top: 6px;">
+                    If you host the bypass file externally (e.g. MediaFire, Mega, Google Drive), paste the link here.
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 24px;">
+                <div class="field">
+                    <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        File Display Name
+                    </label>
+                    <input type="text" name="bypass_filename" value="{{ settings.bypass_filename }}" class="form-input" placeholder="e.g. AXC_Bypass_v4.zip" style="font-family: var(--font-mono); font-size: 13px;" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label class="form-label" style="font-weight: 700; font-size: 12.5px; text-transform: uppercase; color: var(--tx2); letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        File Size Label
+                    </label>
+                    <input type="text" name="bypass_file_size" value="{{ settings.bypass_file_size }}" class="form-input" placeholder="e.g. 4.8 MB" style="font-family: var(--font-mono); font-size: 13px;" autocomplete="off">
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.02); border: 1.5px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 18px 20px; margin-bottom: 30px;">
+                <label class="bs-check" style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;">
+                    <input type="checkbox" name="zinipay_enabled" {% if settings.zinipay_enabled %}checked{% endif %} style="transform: scale(1.2); cursor: pointer;">
+                    <span style="font-size: 14px; font-weight: 700; color: #fff;">Enable ZiniPay Checkout System</span>
+                </label>
+                <div style="font-size: 11px; color: var(--tx3); margin-top: 6px; margin-left: 26px;">
+                    If disabled, users clicking purchase on the landing page will fallback to the default static Buy URL.
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="padding: 12px 30px; font-weight: 800; font-size: 13.5px; letter-spacing: 0.5px; text-transform: uppercase;">
+                💾 Save Payment Gateway Settings
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

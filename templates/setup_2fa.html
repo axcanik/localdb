@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .security-status-card {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .shield-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 2px dashed rgba(16, 185, 129, 0.4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        animation: pulseGreen 2.5s infinite;
+    }
+    @keyframes pulseGreen {
+        0% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); }
+        50% { box-shadow: 0 0 35px rgba(16, 185, 129, 0.5); border-color: rgba(16, 185, 129, 0.9); }
+        100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); }
+    }
+    
+    .qr-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 24px 0;
+        position: relative;
+    }
+    
+    .qr-border {
+        padding: 12px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.1), 0 0 60px rgba(245, 158, 11, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Scan Line Effect */
+    .qr-border::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: rgba(245, 158, 11, 0.85);
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+        animation: scan 3s linear infinite;
+    }
+    
+    @keyframes scan {
+        0% { top: 0%; }
+        50% { top: 100%; }
+        100% { top: 0%; }
+    }
+
+    .secret-badge {
+        font-family: var(--font-mono);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        color: var(--r4);
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        letter-spacing: 1px;
+        word-break: break-all;
+        margin-top: 10px;
+        display: inline-block;
+        user-select: all;
+    }
+    
+    .instruction-step {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    
+    .step-number {
+        width: 28px;
+        height: 28px;
+        background: var(--r-bg);
+        border: 1px solid var(--border-r);
+        color: var(--r4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="page-top page">
+    <div>
+        <h1 class="page-title">2FA Security</h1>
+        <p class="page-sub">Configure and manage two-factor authentication to secure your client portal</p>
+    </div>
+</div>
+
+<div class="settings-form--bot page" style="--i:2; max-width: 1100px; margin: 0 auto; gap: 30px;">
+    
+    <!-- Left Column: Status and Info -->
+    <div class="card" style="padding: 30px;">
+        {% if otp_enabled %}
+            <div class="security-status-card">
+                <div class="shield-icon">
+                    <svg style="width: 40px; height: 40px; stroke: #10b981; fill: none;" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 8px;">2FA IS ACTIVE & SECURED</h2>
+                <p style="color: var(--tx3); font-size: 14px; line-height: 1.6; max-width: 480px; margin: 0 auto 28px;">
+                    Your account is protected by an additional verification layer. Standard login attempts will require entering a 6-digit dynamic token generated on your mobile security application.
+                </p>
+                
+                <form method="POST" onsubmit="return confirm('WARNING: Disabling two-factor authentication will degrade your account security. Are you sure you want to proceed?')">
+                    <input type="hidden" name="action" value="disable">
+                    <button type="submit" class="btn-danger" style="max-width: 250px; margin: 0 auto; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
+                        Deactivate 2FA Security
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <div class="card-head">
+                <h2 class="card-title">Setup Two-Factor Authentication</h2>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div>
+                    <h3 style="font-size: 15px; color: #fff; margin-bottom: 4px;">Install Authenticator App</h3>
+                    <p style="font-size: 13px; color: var(--tx3);">Download Google Authenticator, Microsoft Authenticator, or Aegis from the Apple App Store or Google Play Store.</p>
+                </div>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div>
+                    <h3 style="font-size: 15px; color: #fff; margin-bottom: 4px;">Scan the QR Code</h3>
+                    <p style="font-size: 13px; color: var(--tx3);">Open the authenticator application, select "Scan a QR code", and scan the image shown on the right side of this screen.</p>
+                </div>
+            </div>
+            
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div>
+                    <h3 style="font-size: 15px; color: #fff; margin-bottom: 4px;">Confirm Setup</h3>
+                    <p style="font-size: 13px; color: var(--tx3);">Input the 6-digit confirmation code generated in your app to activate the protection.</p>
+                </div>
+            </div>
+            
+            <div style="border-top: 1px solid var(--border); padding-top: 24px; margin-top: 24px;">
+                <form method="POST" class="settings-form">
+                    <input type="hidden" name="action" value="verify">
+                    <div class="field">
+                        <label class="form-label">Enter 6-Digit Authenticator Code</label>
+                        <input type="text" name="otp_code" class="form-input" placeholder="e.g. 123456" required autocomplete="off" maxlength="6" pattern="\d{6}" inputmode="numeric"
+                            style="text-align: center; font-size: 20px; letter-spacing: 4px; font-family: var(--font-mono); color: var(--r4); font-weight: 700;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="margin-top: 10px;">Activate Protection</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Right Column: QR and Key Display (Only when setup is active) -->
+    {% if not otp_enabled %}
+        <div class="card" style="text-align: center; padding: 30px;">
+            <div class="card-head" style="justify-content: center; text-align: center;">
+                <h2 class="card-title">Security QR Identifier</h2>
+            </div>
+            
+            <div class="qr-container">
+                <div class="qr-border">
+                    <img src="{{ qr_url }}" alt="2FA QR Code" style="display: block; width: 180px; height: 180px; filter: contrast(1.1);">
+                </div>
+            </div>
+            
+            <p style="font-size: 11px; color: var(--tx3); text-transform: uppercase; letter-spacing: 1px; margin-top: 20px;">Manual Configuration Secret</p>
+            <div class="secret-badge" title="Click to copy secret key">{{ secret }}</div>
+            <p style="font-size: 11px; color: var(--tx3); margin-top: 8px;">Keep this secret key safe in case you lose access to your device.</p>
+        </div>
+    {% endif %}
+    
+</div>
+{% endblock %}
