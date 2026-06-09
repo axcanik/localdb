@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Styling adjustments for beautiful flat layout */
+    .page-title {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .uid-cell {
+        max-width: 180px;
+        overflow: hidden;
+    }
+
+    .uid-mono {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tx);
+        word-break: break-all;
+        line-height: 1.4;
+    }
+
+    .uid-note {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 3px;
+    }
+
+    tbody tr {
+        transition: background 0.15s ease;
+    }
+
+    tbody tr:hover td {
+        background: rgba(220, 38, 38, 0.03);
+    }
+
+    .stat-card-foot {
+        font-size: 11px;
+        color: var(--tx3);
+        margin-top: 8px;
+        opacity: 0.7;
+    }
+
+    .badge-gold {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        letter-spacing: 0.5px;
+    }
+
+    .badge-green {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .row-expired td {
+        opacity: 0.45;
+    }
+
+    .btn-purge {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: var(--r4);
+        padding: 8px 18px;
+        border-radius: var(--radius-xs);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: inherit;
+        transition: var(--transition);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .btn-purge:hover {
+        background: var(--r3);
+        color: #fff;
+        border-color: var(--r3);
+        box-shadow: var(--shadow-r2);
+        transform: translateY(-1px);
+    }
+
+    .card-head {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+<div class="page-top">
+    <div>
+        <h1 class="page-title">{{ t.dashboard }}</h1>
+        <p class="page-sub">Manage your UID database and bypass licenses</p>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+        {% if stats.expired > 0 %}
+        <form action="{{ url_for('purge_expired') }}" method="POST" style="margin:0;">
+            <button type="submit" class="btn-purge"
+                onclick="return confirm('Delete all {{ stats.expired }} expired UIDs?')">
+                🗑 {{ t.purge_expired }} ({{ stats.expired }})
+            </button>
+        </form>
+        {% endif %}
+        <span class="stat-pill">● {{ t.live_sync }}</span>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-label">{{ t.total_registered }}</div>
+        <div class="stat-card-value">{{ stats.total }}</div>
+        <div class="stat-card-foot">All UIDs in database</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-label" style="color:var(--green);">{{ t.active_licenses }}</div>
+        <div class="stat-card-value" style="color:var(--green);">{{ stats.active }}</div>
+        <div class="stat-card-foot">Currently whitelisted</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-label" style="color:var(--r4);">{{ t.expired }}</div>
+        <div class="stat-card-value" style="color:var(--r4);">{{ stats.expired }}</div>
+        <div class="stat-card-foot">Ready to purge</div>
+    </div>
+</div>
+
+<!-- Main Flat Grid Layout -->
+<div class="settings-form--bot">
+
+    <!-- Registered UIDs Table (Excludes Trials) -->
+    <div class="card" style="padding:0;">
+        <div class="card-head"
+            style="padding: 20px 24px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 15px;">
+            <span class="card-title">{{ t.registered_uids }}</span>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <input type="text" id="uidSearchInput" placeholder="🔍 Search UID or Note..." style="background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 12.5px; outline: none; width: 220px; transition: all 0.2s;" onfocus="this.style.borderColor='var(--r3)';" onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)';">
+                <span class="tag tag-gray" id="entriesCountTag">
+                    {% set standard_count = uids | rejectattr('added_by', 'equalto', 'FreePortal') | list | length %}
+                    {{ standard_count }} entries
+                </span>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>{{ t.game_uid }} / {{ t.note }}</th>
+                        <th>{{ t.status }}</th>
+                        <th>{{ t.duration }}</th>
+                        <th>{{ t.added_by }}</th>
+                        <th style="text-align: right;">{{ t.action }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in uids if item.added_by != 'FreePortal' %}
+                    <tr class="{{ 'row-expired' if item.is_expired else '' }}">
+                        <td class="uid-cell">
+                            <div class="uid-mono">{{ item.uid }}</div>
+                            {% if item.note %}
+                            <div class="uid-note">{{ item.note }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.is_expired %}
+                            <span class="badge badge-red">EXPIRED</span>
+                            {% else %}
+                            <span class="badge badge-green">ACTIVE</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.expiry_date == 'lifetime' %}
+                            <span class="badge badge-gold">♾ LIFETIME</span>
+                            {% else %}
+                            <div class="mono-sm">{{ item.expiry_date.split(' ')[0] }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="color:var(--tx3); font-size:12px;">{{ item.added_by }}</td>
+                        <td style="text-align: right;">
+                            <form action="{{ url_for('delete_uid', uid=item.uid) }}" method="POST"
+                                style="margin:0; display:inline-block;">
+                                <button type="submit" class="btn-danger btn-xs">Revoke</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding:50px; color:var(--tx3);">
+                            No standard UIDs found in the database.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Issue License Form -->
+    <div class="card">
+        <div class="card-head">
+            <span class="card-title">{{ t.issue_license }}</span>
+        </div>
+        <p class="card-desc">{{ t.issue_desc }}</p>
+
+        <form action="{{ url_for('add_uid') }}" method="POST" class="settings-form">
+            <div class="field">
+                <label class="form-label">{{ t.game_uid }} *</label>
+                <input type="text" name="uid" class="form-input" placeholder="e.g. 882736152" required
+                    autocomplete="off">
+            </div>
+
+            <div class="field">
+                <label class="form-label">{{ t.duration }}</label>
+                <select name="days" class="form-input">
+                    <option value="1">1 Day (Daily)</option>
+                    <option value="3">3 Days (Trial)</option>
+                    <option value="7">7 Days (Weekly)</option>
+                    <option value="14">14 Days (Bi-weekly)</option>
+                    <option value="30" selected>30 Days (Monthly)</option>
+                    <option value="90">90 Days (Quarterly)</option>
+                    <option value="365">365 Days (Yearly)</option>
+                    <option value="0">♾ Lifetime (Never Expires)</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label class="form-label">{{ t.note }}</label>
+                <input type="text" name="note" class="form-input" placeholder="e.g. VIP User, Player Name">
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top:10px;">{{ t.issue_license }}</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('uidSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const uidCell = row.querySelector('.uid-cell');
+                if (uidCell) {
+                    const text = uidCell.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+            
+            const countTag = document.getElementById('entriesCountTag');
+            if (countTag) {
+                countTag.textContent = `${visibleCount} entries`;
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

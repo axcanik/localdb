@@ -1,0 +1,10 @@
+Flask
+requests
+pyotp
+pymongo
+dnspython
+python-dotenv
+gunicorn
+discord.py
+psutil
+certifi

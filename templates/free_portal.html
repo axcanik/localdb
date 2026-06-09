@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Monetag Multitag All-in-One Integration (Only for Free Portal) -->
+<script src="https://quge5.com/88/tag.min.js" data-zone="241555" async data-cfasync="false"></script>
+
+<style>
+    /* Responsive styling for side rails - hide on medium/small laptops and tablets */
+    @media (max-width: 1050px) {
+        .side-ad-rail {
+            display: none !important;
+        }
+    }
+    @keyframes pulseGlow {
+        0%, 100% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+</style>
+
+<div class="auth-wrap page" style="display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; max-width: 1250px; margin: 0 auto; min-height: 85vh; padding: 20px;">
+    
+    <!-- LEFT SIDE SKYSCRAPER ADSTERRA AD RAIL -->
+    <div class="side-ad-rail left-rail" style="width: 200px; height: 650px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(245, 158, 11, 0.25); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; padding: 15px 10px; box-shadow: 0 4px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        
+        <div style="font-size: 10px; color: var(--r4); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; opacity: 0.8;">
+            ⚡ SPONSOR AD (LEFT) ⚡
+        </div>
+        
+        <!-- Adsterra 160x600 Skyscraper Banner -->
+        <script>
+          atOptions = {
+            'key' : 'bf26d4857ad65f36b34bfa1f896639fd',
+            'format' : 'iframe',
+            'height' : 600,
+            'width' : 160,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/bf26d4857ad65f36b34bfa1f896639fd/invoke.js"></script>
+
+    </div>
+
+    <!-- CENTER MAIN FORM CARD -->
+    <div class="auth-card auth-card--standalone" style="width: 100%; max-width: 480px; padding: 30px; margin: 0; flex-shrink: 0; box-shadow: 0 0 40px rgba(245, 158, 11, 0.15); border-top: 4px solid var(--r3); background: rgba(10, 10, 15, 0.75);">
+        <div class="auth-brand-logo">
+            <img src="{{ url_for('static', filename='he.png') }}" alt="Logo"
+                style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;">
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div class="auth-title" style="color: #00FF88;">Free {{ remaining_days }}-Day Trial</div>
+            <div class="auth-sub">Support our service by viewing the sponsor ads below to unlock your license</div>
+        </div>
+
+        <form method="POST" class="auth-form" id="claimForm">
+            <div class="field">
+                <label class="form-label">Game UID</label>
+                <input type="text" name="uid" id="uidInput" placeholder="Enter your UID" required autocomplete="off"
+                    class="form-input" pattern="\d{8,12}" title="Must be a valid game UID (numbers only)">
+            </div>
+
+            <!-- INLINE SPONSOR AD SECTION -->
+            <div style="margin: 20px 0; border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 18px 15px; background: rgba(0,0,0,0.3); position: relative;">
+                <div style="font-size: 11px; color: var(--r4); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span style="display:inline-block; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: pulseGlow 1.5s infinite;"></span>
+                    Sponsored Advertisements
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    
+                    <!-- Ad Slot 1 -->
+                    <div class="ad-slot-container" style="width: 100%; max-width: 320px; min-height: 100px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px;">
+                        <script>(function(s){s.dataset.zone='11028689',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+                    </div>
+
+                    <!-- Ad Slot 2 -->
+                    <div class="ad-slot-container" style="width: 100%; max-width: 320px; min-height: 100px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px;">
+                        <script>(function(s){s.dataset.zone='11028689',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+                    </div>
+
+                </div>
+
+                <!-- Custom dynamic progress timer -->
+                <div id="adTimerOverlay" style="margin-top: 18px; text-align: center;">
+                    <div style="font-size: 12px; color: var(--tx3); margin-bottom: 8px;" id="timerLabel">🎥 Video Verification Active... Please watch the side videos (15s)</div>
+                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; position: relative;">
+                        <div id="progressBar" style="width: 0%; height: 100%; background: var(--r3); box-shadow: 0 0 8px var(--r3); transition: width 1s linear;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="claimBtn" class="btn-full" disabled
+                style="margin-top: 10px; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.04); box-shadow: none; cursor: not-allowed; opacity: 0.5; color: var(--tx3); transition: all 0.3s ease;">
+                Please Watch Sponsor Video to Unlock (15s)
+            </button>
+        </form>
+    </div>
+
+    <!-- RIGHT SIDE SKYSCRAPER ADSTERRA AD RAIL -->
+    <div class="side-ad-rail right-rail" style="width: 200px; height: 650px; background: rgba(255,255,255,0.01); border: 1px dashed rgba(245, 158, 11, 0.25); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; position: relative; padding: 15px 10px; box-shadow: 0 4px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        
+        <div style="font-size: 10px; color: var(--r4); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; opacity: 0.8;">
+            ⚡ SPONSOR AD (RIGHT) ⚡
+        </div>
+        
+        <!-- Adsterra 160x600 Skyscraper Banner -->
+        <script>
+          atOptions = {
+            'key' : 'bf26d4857ad65f36b34bfa1f896639fd',
+            'format' : 'iframe',
+            'height' : 600,
+            'width' : 160,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/bf26d4857ad65f36b34bfa1f896639fd/invoke.js"></script>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const claimBtn = document.getElementById("claimBtn");
+        const progressBar = document.getElementById("progressBar");
+        const timerLabel = document.getElementById("timerLabel");
+        
+        let secondsLeft = 15; // Setup required view time in seconds (e.g. 15s)
+        const totalDuration = secondsLeft;
+        
+        // Start live countdown
+        const interval = setInterval(() => {
+            secondsLeft--;
+            const percentage = ((totalDuration - secondsLeft) / totalDuration) * 100;
+            progressBar.style.width = percentage + "%";
+            
+            if (secondsLeft > 0) {
+                timerLabel.innerHTML = `🎥 <span style="color: var(--r4); font-weight:700;">Video Verification Active...</span> Please watch the side videos (${secondsLeft}s left)`;
+                claimBtn.innerText = `Please Watch Sponsor Video to Unlock (${secondsLeft}s)`;
+            } else {
+                clearInterval(interval);
+                timerLabel.innerHTML = `<span style="color: #00FF88; font-weight:700;">✓ Verification Successful!</span> Free {{ remaining_days }}-Day Bypass Unlocked.`;
+                progressBar.style.background = "#00FF88";
+                progressBar.style.boxShadow = "0 0 10px #00FF88";
+                
+                // Enable claim button completely
+                claimBtn.disabled = false;
+                claimBtn.style.cursor = "pointer";
+                claimBtn.style.opacity = "1";
+                claimBtn.style.color = "#ffffff";
+                claimBtn.style.background = "linear-gradient(135deg, #00c853, #00e676, #64dd17)";
+                claimBtn.style.boxShadow = "0 4px 15px rgba(0, 200, 83, 0.25)";
+                claimBtn.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                claimBtn.innerText = "Claim Free Access Now";
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}
