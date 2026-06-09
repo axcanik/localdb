@@ -1388,9 +1388,29 @@ def admin_settings():
         settings['zinipay_api_key'] = request.form.get('zinipay_api_key', '')
         settings['zinipay_enabled'] = 'zinipay_enabled' in request.form
         settings['tutorial_video_url'] = request.form.get('tutorial_video_url', '')
-        settings['bypass_download_url'] = request.form.get('bypass_download_url', '')
-        settings['bypass_filename'] = request.form.get('bypass_filename', '')
-        settings['bypass_file_size'] = request.form.get('bypass_file_size', '')
+        
+        # Handle file upload for Bypass Module
+        if 'bypass_file' in request.files:
+            file = request.files['bypass_file']
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                upload_dir = os.path.join(app.root_path, 'static', 'downloads')
+                os.makedirs(upload_dir, exist_ok=True)
+                file_path = os.path.join(upload_dir, filename)
+                file.save(file_path)
+                
+                settings['bypass_download_url'] = url_for('static', filename=f'downloads/{filename}')
+                settings['bypass_filename'] = filename
+                
+                # Optionally calculate file size
+                size_bytes = os.path.getsize(file_path)
+                size_mb = size_bytes / (1024 * 1024)
+                settings['bypass_file_size'] = f"{size_mb:.1f} MB"
+        else:
+            settings['bypass_download_url'] = request.form.get('bypass_download_url', settings.get('bypass_download_url', ''))
+            settings['bypass_filename'] = request.form.get('bypass_filename', settings.get('bypass_filename', ''))
+            settings['bypass_file_size'] = request.form.get('bypass_file_size', settings.get('bypass_file_size', ''))
+
         save_dict_json(SETTINGS_FILE, settings)
         flash('Settings updated successfully.', 'success')
         return redirect(url_for('admin_settings'))
