@@ -19,7 +19,7 @@
         <div class="card-head">
             <h2 class="card-title">Bot Configuration</h2>
         </div>
-        <form action="{{ url_for('discord_bot_manager') }}" method="POST">
+        <form action="{{ url_for('discord_bot') }}" method="POST">
             <input type="hidden" name="action" value="save">
             
             <div class="field">
@@ -62,12 +62,12 @@
         {% if config.token and config.server_id and config.channel_id %}
         <div style="border-top: 1px solid rgba(255,255,255,0.06); margin-top: 24px; padding-top: 24px; display: flex; gap: 16px;">
             {% if not is_active %}
-                <form action="{{ url_for('discord_bot_manager') }}" method="POST" style="flex: 1; margin: 0;">
+                <form action="{{ url_for('discord_bot') }}" method="POST" style="flex: 1; margin: 0;">
                     <input type="hidden" name="action" value="start">
                     <button type="submit" class="btn-full" style="background: linear-gradient(135deg, #059669, #10b981); border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);">Deploy & Start Bot</button>
                 </form>
             {% else %}
-                <form action="{{ url_for('discord_bot_manager') }}" method="POST" style="flex: 1; margin: 0;">
+                <form action="{{ url_for('discord_bot') }}" method="POST" style="flex: 1; margin: 0;">
                     <input type="hidden" name="action" value="stop">
                     <button type="submit" class="btn-full" style="background: linear-gradient(135deg, #e11d48, #f43f5e); border-color: rgba(244, 63, 94, 0.4); box-shadow: 0 4px 15px rgba(244, 63, 94, 0.15);">Stop Bot Subprocess</button>
                 </form>
