@@ -45,7 +45,7 @@ SETTINGS_FILE = os.path.join(BASE_DIR, 'data', 'settings.json')
 PENDING_PAYMENTS_FILE = os.path.join(BASE_DIR, 'data', 'pending_payments.json')
 
 BYPASS_DOWNLOAD_URL = "https://anikxcheats.com/downloads/AXC_Bypass_v4.zip"
-TUTORIAL_VIDEO_URL = "https://www.youtube.com/embed/dQw4w9WgXcQ"
+TUTORIAL_VIDEO_URL = "https://www.youtube.com/embed/zoYtQcTkR3Y"
 
 def check_and_purge_expired_users():
     users = load_json(USERS_FILE)
@@ -168,7 +168,7 @@ def get_payment_settings():
         settings = {
             "zinipay_api_key": "",
             "zinipay_enabled": False,
-            "tutorial_video_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "tutorial_video_url": "https://www.youtube.com/embed/zoYtQcTkR3Y",
             "bypass_download_url": "https://anikxcheats.com/downloads/AXC_Bypass_v4.zip",
             "bypass_filename": "AXC_Bypass_v4.zip",
             "bypass_file_size": "4.8 MB"
@@ -178,7 +178,7 @@ def get_payment_settings():
         # Default any missing keys
         modified = False
         if "tutorial_video_url" not in settings:
-            settings["tutorial_video_url"] = "https://www.youtube.com/embed/dQw4w9WgXcQ"
+            settings["tutorial_video_url"] = "https://www.youtube.com/embed/zoYtQcTkR3Y"
             modified = True
         if "zinipay_api_key" not in settings:
             settings["zinipay_api_key"] = ""
@@ -1391,12 +1391,12 @@ def pay_zinipay():
         return redirect(url_for('landing'))
         
     settings = get_payment_settings()
-    # In a real scenario, make API request to ZiniPay here.
-    # For now, redirect to the product's external buy link or a placeholder checkout.
-    if product.get('buy_url'):
-        return redirect(product['buy_url'])
+    if not settings.get('zinipay_enabled'):
+        flash("Payment gateway is currently disabled. Please contact admin on Discord to purchase.", "error")
+        return redirect(url_for('landing'))
         
-    flash("Payment integration is pending setup. Please contact admin.", "warning")
+    # In a real scenario, make API request to ZiniPay here.
+    flash("ZiniPay Integration is pending API setup. Please configure merchant details.", "warning")
     return redirect(url_for('landing'))
 
 @app.route('/admin/settings', methods=['GET', 'POST'])
@@ -1411,7 +1411,20 @@ def admin_settings():
     if request.method == 'POST':
         settings['zinipay_api_key'] = request.form.get('zinipay_api_key', '')
         settings['zinipay_enabled'] = 'zinipay_enabled' in request.form
-        settings['tutorial_video_url'] = request.form.get('tutorial_video_url', '')
+        raw_url = request.form.get('tutorial_video_url', '').strip()
+        if 'youtu.be/' in raw_url:
+            video_id = raw_url.split('youtu.be/')[-1].split('?')[0]
+            settings['tutorial_video_url'] = f"https://www.youtube.com/embed/{video_id}"
+        elif 'youtube.com/watch' in raw_url:
+            import urllib.parse
+            parsed = urllib.parse.urlparse(raw_url)
+            video_id = urllib.parse.parse_qs(parsed.query).get('v', [''])[0]
+            if video_id:
+                settings['tutorial_video_url'] = f"https://www.youtube.com/embed/{video_id}"
+            else:
+                settings['tutorial_video_url'] = raw_url
+        else:
+            settings['tutorial_video_url'] = raw_url
         
         # Handle file upload for Bypass Module
         if 'bypass_file' in request.files:
