@@ -4,541 +4,417 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anik X Cheats | Premium Stealth Bypass</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Three.js & Vanta for lightweight 3D waves -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
-    <!-- Vanilla Tilt for 3D Product Cards -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
     <style>
         :root {
-            --bg-color: #000000;
+            --bg-dark: #050505;
             --primary: #ef4444;
-            --primary-glow: rgba(239, 68, 68, 0.7);
+            --primary-rgb: 239, 68, 68;
             --secondary: #10b981;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-            --card-bg: rgba(10, 10, 10, 0.4);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #fcfcfc;
+            --text-muted: #888888;
+            --glass-bg: rgba(10, 10, 10, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: none; /* Custom cursor */
         }
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 3D Canvas Background */
-        #vanta-canvas {
+        /* Custom Cursor */
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+        }
+
+        .cursor.active {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 10px;
+            font-weight: 700;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--primary);
+            width: 0%;
+        }
+
+        /* 3D Canvas */
+        #webgl-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -2;
-            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
 
-        /* Navbar */
+        /* Layout & UI */
         nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 8%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            position: fixed;
-            width: 100%;
-            top: 0;
             z-index: 100;
+            mix-blend-mode: difference;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 800;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
             letter-spacing: 2px;
-            text-transform: uppercase;
+            color: #fff;
         }
 
-        .logo span {
-            color: var(--primary);
-            text-shadow: 0 0 15px var(--primary-glow);
-        }
+        .logo span { color: var(--primary); }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
+        .nav-links { display: flex; gap: 40px; }
         .nav-links a {
-            color: var(--text-main);
+            color: #fff;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            font-weight: 600;
+            position: relative;
         }
 
-        .nav-links a:hover {
-            color: var(--primary);
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 0; height: 1px;
+            background: #fff;
+            transition: 0.3s;
         }
 
-        .btn-login {
-            background: linear-gradient(45deg, var(--primary), #b91c1c);
-            padding: 10px 24px;
-            border-radius: 6px;
-            color: white !important;
-            font-weight: 800;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.2s;
+        .nav-links a:hover::after { width: 100%; }
+
+        /* Typography Animations */
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+        .reveal-text span {
+            display: inline-block;
+            transform: translateY(110%);
+            opacity: 0;
         }
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Mobile Menu */
-        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background: rgba(10,10,10,0.95);
-                padding: 20px;
-                border-bottom: 1px solid var(--card-border);
-            }
-            .nav-links.active { display: flex; }
-            .menu-toggle { display: block; }
-        }
-
-        /* Hero Section */
-        .hero {
+        /* Sections */
+        section {
+            position: relative;
             min-height: 100vh;
+            padding: 100px 5%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 120px 8% 60px;
-            gap: 50px;
         }
 
-        @media (max-width: 992px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-                padding-top: 150px;
-            }
+        .hero {
+            justify-content: flex-start;
         }
 
         .hero-content {
-            flex: 1;
-            max-width: 650px;
-            z-index: 10;
+            max-width: 800px;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 8px 18px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 30px;
-            color: var(--primary);
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 2px;
+        .hero h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(4rem, 8vw, 8rem);
+            line-height: 0.9;
             text-transform: uppercase;
-            margin-bottom: 25px;
-        }
-
-        .hero-title {
-            font-size: clamp(3rem, 5vw, 5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-        }
-
-        .hero-title .red-text {
+            font-weight: 700;
             color: transparent;
-            -webkit-text-stroke: 1.5px var(--primary);
-            background: none;
-            display: block;
-            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.5));
-        }
-
-        .hero-desc {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 20px;
-        }
-
-        @media (max-width: 500px) {
-            .cta-group { flex-direction: column; align-items: stretch; }
-        }
-
-        .btn-secondary {
-            padding: 15px 35px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 16px;
-            text-transform: uppercase;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        /* 3D System Status Card */
-        .hero-gfx {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            perspective: 1000px;
-        }
-
-        .status-card {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(10, 10, 10, 0.6);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(239, 68, 68, 0.05);
-            backdrop-filter: blur(20px);
-            transform-style: preserve-3d;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
             margin-bottom: 30px;
-            transform: translateZ(30px);
         }
 
-        .card-dot {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
+        .hero h1 .filled {
+            color: #fff;
+            -webkit-text-stroke: 0px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.3);
         }
 
-        .card-title {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
-            font-size: 14px;
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 50px;
+        }
+
+        .magnetic-btn {
+            display: inline-block;
+            padding: 20px 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
             letter-spacing: 2px;
-        }
-
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            background: rgba(0,0,0,0.6);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transform: translateZ(20px);
-            transition: transform 0.3s;
-        }
-
-        .feature-row:hover {
-            transform: translateZ(40px) scale(1.02);
-            border-color: rgba(239, 68, 68, 0.4);
-        }
-
-        .feature-icon { font-size: 24px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
-        .feature-text { font-size: 14px; color: #fff; font-weight: 700; }
-        .feature-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
-
-        /* Store Section */
-        .store-section {
-            padding: 100px 5%;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,5,5,0.9) 100%);
+            font-size: 0.9rem;
+            font-weight: 600;
             position: relative;
-            z-index: 10;
-            border-top: 1px solid var(--card-border);
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            top: 100%; left: 0; width: 100%; height: 100%;
+            background: var(--primary);
+            transition: top 0.4s cubic-bezier(0.7, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .magnetic-btn:hover::before { top: 0; }
+        .magnetic-btn:hover { border-color: transparent; }
+
+        /* Products Store */
+        .store {
+            flex-direction: column;
+            justify-content: center;
         }
 
         .section-title {
-            text-align: center;
-            font-size: clamp(2.5rem, 4vw, 3.5rem);
-            font-weight: 800;
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
-        }
-
-        .section-subtitle {
             text-align: center;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 60px;
+            margin-bottom: 100px;
+            width: 100%;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 40px;
-            max-width: 1200px;
+            width: 100%;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .product-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 15, 15, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 50px 40px;
             border-radius: 20px;
-            padding: 40px 30px;
-            text-align: center;
-            transform-style: preserve-3d;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .product-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+            opacity: 0;
+            transition: 0.5s;
+            pointer-events: none;
+        }
+
+        .product-card:hover::after { opacity: 1; transform: translate(10%, 10%); }
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(239, 68, 68, 0.1);
         }
 
         .p-image {
-            width: 120px; height: 120px;
-            margin: 0 auto 25px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3);
-            transform: translateZ(50px);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
         }
 
-        .p-image img { 
-            max-width: 80px; 
-            max-height: 80px; 
-            object-fit: contain;
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+        .p-image img {
+            max-height: 100px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            transition: 0.5s;
         }
 
-        .p-title { 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            color: #fff; 
-            margin-bottom: 10px; 
-            transform: translateZ(30px);
+        .product-card:hover .p-image img {
+            transform: scale(1.1) translateY(-10px);
         }
+
+        .p-title { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+        .p-price { font-family: 'Syncopate', sans-serif; font-size: 2.5rem; color: var(--primary); margin-bottom: 30px; }
+        .p-price span { font-size: 1rem; color: var(--text-muted); font-family: 'Outfit', sans-serif; }
         
-        .p-desc { 
-            color: var(--text-muted); 
-            font-size: 0.95rem; 
-            margin-bottom: 20px; 
-            transform: translateZ(20px);
+        .p-features { list-style: none; margin-bottom: 40px; }
+        .p-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .p-price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px var(--primary-glow);
-            transform: translateZ(40px);
-        }
-        .p-price span { font-size: 1rem; color: var(--text-muted); text-shadow: none; }
-
-        .p-features { list-style: none; margin-bottom: 35px; text-align: left; transform: translateZ(20px); }
-        .p-features li { color: #d1d5db; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
-        .p-features li::before { content: '✓'; color: var(--secondary); font-weight: bold; font-size: 16px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .p-features li::before { content: ''; width: 6px; height: 6px; background: var(--primary); border-radius: 50%; }
 
         .btn-buy {
-            display: block; width: 100%; padding: 16px;
-            background: linear-gradient(45deg, rgba(239,68,68,0.1), rgba(239,68,68,0.2));
-            border: 1px solid rgba(239,68,68,0.5);
-            border-radius: 10px; color: white; text-decoration: none;
-            font-weight: 800; text-transform: uppercase; cursor: pointer;
-            transition: 0.3s;
-            transform: translateZ(30px);
-        }
-
-        .btn-buy:hover { 
-            background: linear-gradient(45deg, var(--primary), #b91c1c); 
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        /* Features Section */
-        .features-section {
-            padding: 100px 5%;
-            background: rgba(0,0,0,0.8);
-            border-top: 1px solid var(--card-border);
-            position: relative;
-            z-index: 10;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .f-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 40px 30px;
-            border-radius: 20px;
-            transform-style: preserve-3d;
-            backdrop-filter: blur(10px);
-        }
-
-        .f-icon {
-            font-size: 40px;
-            margin-bottom: 25px;
-            background: rgba(239, 68, 68, 0.1);
-            display: inline-block;
-            padding: 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            transform: translateZ(30px);
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.15);
-        }
-
-        .f-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; transform: translateZ(20px); }
-        .f-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; transform: translateZ(10px); }
-
-        footer {
-            padding: 40px 5%;
-            background: #000;
-            border-top: 1px solid var(--card-border);
+            display: block; width: 100%; padding: 20px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
             text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            border-radius: 10px;
             position: relative;
-            z-index: 10;
+            overflow: hidden;
+            transition: 0.3s;
         }
+
+        .btn-buy::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--primary);
+            transition: 0.3s;
+            z-index: -1;
+        }
+        
+        .btn-buy:hover::before { left: 0; }
+        .btn-buy:hover { color: #fff; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+
+        /* Footer */
+        footer {
+            padding: 50px 5%;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- 3D Canvas Background -->
-    <div id="vanta-canvas"></div>
+    <div class="preloader">
+        <div class="loader-text">INITIALIZING</div>
+        <div class="progress-bar"></div>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div id="webgl-container"></div>
 
     <nav>
         <div class="logo">AXC <span>System</span></div>
-        <div class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</div>
         <div class="nav-links">
-            <a href="#store">Store</a>
-            <a href="#features">Features</a>
-            <a href="https://discord.gg/anikxcheats" target="_blank">Discord</a>
+            <a href="#store" class="hover-target">Store</a>
+            <a href="https://discord.gg/anikxcheats" target="_blank" class="hover-target">Discord</a>
             {% if session.user_id %}
-                <a href="{{ url_for('dashboard') }}" class="btn-login">Dashboard</a>
+                <a href="{{ url_for('dashboard') }}" class="hover-target">Dashboard</a>
             {% else %}
-                <a href="{{ url_for('login') }}" class="btn-login">Sign In</a>
+                <a href="{{ url_for('login') }}" class="hover-target">Sign In</a>
             {% endif %}
         </div>
     </nav>
 
     <section class="hero">
         <div class="hero-content">
-            <div class="badge">🟢 V4 Kernel Engine Active</div>
-            <h1 class="hero-title">
-                Absolute <br><span class="red-text">Dominance</span>
+            <h1 class="reveal-text">
+                <span>ABSOLUTE</span><br>
+                <span class="filled">DOMINANCE</span>
             </h1>
-            <p class="hero-desc">
-                Experience the most advanced stealth bypass technology. Designed for competitive edge, engineered for absolute undetectable security. Join the elite network today.
+            <p class="reveal-text" style="transition-delay: 0.2s;">
+                <span>Experience the most advanced stealth bypass technology. Engineered for undetectable security in competitive environments.</span>
             </p>
-            <div class="cta-group">
-                {% if session.user_id %}
-                    <a href="{{ url_for('dashboard') }}" class="btn-login" style="padding: 15px 35px; font-size: 16px; text-align: center;">Go to Dashboard</a>
-                {% else %}
-                    <a href="#store" class="btn-login" style="padding: 15px 35px; font-size: 16px; text-align: center;">View Products</a>
-                {% endif %}
-                <a href="https://discord.gg/anikxcheats" target="_blank" class="btn-secondary">Join Community</a>
-            </div>
-        </div>
-
-        <div class="hero-gfx">
-            <div class="status-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
-                <div class="card-header">
-                    <div style="display:flex; gap: 8px;">
-                        <div class="card-dot"></div>
-                        <div class="card-dot" style="background:#f59e0b;"></div>
-                        <div class="card-dot" style="background:#10b981;"></div>
-                    </div>
-                    <div class="card-title">SYSTEM_STATUS</div>
-                </div>
-                
-                <div class="feature-row">
-                    <div class="feature-icon">🛡️</div>
-                    <div>
-                        <div class="feature-text">Kernel Level Bypass</div>
-                        <div class="feature-sub">Ring-0 execution and memory masking</div>
-                    </div>
-                </div>
-                <div class="feature-row">
-                    <div class="feature-icon">⚡</div>
-                    <div>
-                        <div class="feature-text">Ultra-Low Latency</div>
-                        <div class="feature-sub">Optimized for 0ms input delay</div>
-                    </div>
-                </div>
-                <div class="feature-row">
-                    <div class="feature-icon">🔒</div>
-                    <div>
-                        <div class="feature-text">Polymorphic Engine</div>
-                        <div class="feature-sub">Signature scrambling active</div>
-                    </div>
-                </div>
-                <div class="feature-row" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
-                    <div class="feature-icon">🟢</div>
-                    <div>
-                        <div class="feature-text" style="color: var(--primary);">Network Connected</div>
-                        <div class="feature-sub">Syncing with global servers...</div>
-                    </div>
-                </div>
+            <div style="margin-top: 40px; opacity: 0; transform: translateY(20px);" class="hero-btn-wrapper">
+                <a href="#store" class="magnetic-btn hover-target">View Products</a>
             </div>
         </div>
     </section>
 
-    <!-- Store Section -->
-    <section class="store-section" id="store">
-        <h2 class="section-title">Premium <span style="color:var(--primary);">Access</span></h2>
-        <p class="section-subtitle">Choose the perfect license duration. Instant delivery.</p>
+    <section class="store" id="store">
+        <h2 class="section-title reveal-text"><span>Premium Access</span></h2>
         
         <div class="products-grid">
             {% if products %}
                 {% for product in products %}
-                <div class="product-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.3">
+                <div class="product-card hover-target">
                     <div class="p-image">
                         {% if product.image_url %}
                             <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.name }}">
                         {% else %}
-                            <span style="font-size: 50px;">🔑</span>
+                            <span style="font-size: 60px;">🔑</span>
                         {% endif %}
                     </div>
                     <h3 class="p-title">{{ product.name }}</h3>
-                    <p class="p-desc">{{ product.description }}</p>
+                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">{{ product.description }}</p>
                     <div class="p-price">
                         ${{ product.price }} <span>/ {{ product.duration_days }} Days</span>
                     </div>
@@ -553,67 +429,246 @@
                     {% if zinipay_enabled %}
                         <form action="{{ url_for('pay_zinipay') }}" method="POST">
                             <input type="hidden" name="product_id" value="{{ product.id }}">
-                            <button type="submit" class="btn-buy">Purchase Now</button>
+                            <button type="submit" class="btn-buy hover-target">Purchase Now</button>
                         </form>
                     {% else %}
-                        <a href="{{ product.buy_url }}" target="_blank" class="btn-buy">Purchase Now</a>
+                        <a href="{{ product.buy_url }}" target="_blank" class="btn-buy hover-target">Purchase Now</a>
                     {% endif %}
                 </div>
                 {% endfor %}
             {% else %}
-                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px; border: 1px dashed var(--card-border); border-radius: 16px; background: rgba(0,0,0,0.5);">
-                    <span style="font-size: 50px; opacity: 0.5;">🛒</span>
-                    <h3 style="margin-top: 15px; color: #fff; font-size: 24px;">Store is Empty</h3>
-                    <p>No active products are available at the moment.</p>
+                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 100px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px;">
+                    <span style="font-size: 50px; opacity: 0.3;">🛒</span>
+                    <h3 style="margin-top: 20px; font-family: 'Syncopate', sans-serif; color: #fff;">Store is Empty</h3>
                 </div>
             {% endif %}
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-        <h2 class="section-title">Why Choose <span style="color:var(--primary);">AXC</span></h2>
-        <div class="features-grid">
-            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
-                <div class="f-icon">🛸</div>
-                <h3 class="f-title">Undetectable</h3>
-                <p class="f-desc">Our proprietary bypass methods operate entirely outside the scope of modern anti-cheat software.</p>
-            </div>
-            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
-                <div class="f-icon">⚙️</div>
-                <h3 class="f-title">Reseller API</h3>
-                <p class="f-desc">Fully automated API for resellers. Integrate instantly with Sellix, Shoppy, or custom Discord bots.</p>
-            </div>
-            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
-                <div class="f-icon">🌐</div>
-                <h3 class="f-title">Global Sync</h3>
-                <p class="f-desc">Instant cloud synchronization. Whenever a license is generated or revoked, changes push instantly.</p>
-            </div>
-        </div>
-    </section>
-
     <footer>
-        <div style="font-size: 16px; font-weight: 800; margin-bottom: 10px;">AXC <span style="color:var(--primary);">SYSTEMS</span></div>
-        <div>© 2026 Anik X Cheats. All rights reserved.</div>
+        <div class="logo">AXC <span>SYSTEMS</span></div>
+        <div style="color: var(--text-muted); font-size: 0.9rem;">© 2026 Anik X Cheats.</div>
     </footer>
 
-    <!-- Initialize Vanta Waves 3D Background -->
+    <!-- Core Logic -->
     <script>
-        VANTA.WAVES({
-            el: "#vanta-canvas",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
+        // Custom Cursor Logic
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        const hoverTargets = document.querySelectorAll('.hover-target');
+
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        // Smooth follow
+        gsap.ticker.add(() => {
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+            follower.style.left = followerX + 'px';
+            follower.style.top = followerY + 'px';
+        });
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => {
+                cursor.classList.add('active');
+                follower.style.opacity = '0';
+            });
+            target.addEventListener('mouseleave', () => {
+                cursor.classList.remove('active');
+                follower.style.opacity = '1';
+            });
+        });
+
+        // Magnetic Buttons
+        const magneticBtns = document.querySelectorAll('.magnetic-btn');
+        magneticBtns.forEach(btn => {
+            btn.addEventListener('mousemove', function(e) {
+                const position = btn.getBoundingClientRect();
+                const x = e.pageX - position.left - position.width / 2;
+                const y = e.pageY - position.top - position.height / 2;
+                
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.5,
+                    ease: 'power2.out',
+                    duration: 0.5
+                });
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                gsap.to(btn, {
+                    x: 0,
+                    y: 0,
+                    ease: 'elastic.out(1, 0.3)',
+                    duration: 1.2
+                });
+            });
+        });
+
+        // Preloader & Animations
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            
+            tl.to('.progress-bar', { width: '100%', duration: 1.5, ease: 'power3.inOut' })
+              .to('.preloader', { yPercent: -100, duration: 1, ease: 'expo.inOut' })
+              .to('.reveal-text span', {
+                  y: 0,
+                  opacity: 1,
+                  duration: 1,
+                  stagger: 0.1,
+                  ease: 'power4.out'
+              }, "-=0.5")
+              .to('.hero-btn-wrapper', {
+                  y: 0,
+                  opacity: 1,
+                  duration: 1,
+                  ease: 'power3.out'
+              }, "-=0.8");
+        });
+
+        // Scroll Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray('.store .reveal-text span').forEach(span => {
+            gsap.to(span, {
+                scrollTrigger: {
+                    trigger: '.store',
+                    start: 'top 80%'
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power4.out'
+            });
+        });
+
+        gsap.from('.product-card', {
+            scrollTrigger: {
+                trigger: '.products-grid',
+                start: 'top 75%'
+            },
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+
+        // Advanced Three.js WebGL Background
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.001);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Create a complex particle system
+        const geometry = new THREE.IcosahedronGeometry(15, 4);
+        const material = new THREE.PointsMaterial({
+            size: 0.15,
             color: 0xef4444,
-            shininess: 30.00,
-            waveHeight: 15.00,
-            waveSpeed: 0.80,
-            zoom: 0.8
-        })
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        // Outer rotating ring
+        const ringGeo = new THREE.TorusGeometry(22, 0.05, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.1 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+
+        // Store original vertices for animation
+        const positions = geometry.attributes.position;
+        const originalPositions = new Float32Array(positions.array.length);
+        for(let i=0; i<positions.array.length; i++) {
+            originalPositions[i] = positions.array[i];
+        }
+
+        let time = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+            targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        // Scroll distortion
+        let scrollY = 0;
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+            
+            // GSAP tie-in for 3D object
+            gsap.to(particles.rotation, {
+                x: scrollY * 0.002,
+                y: scrollY * 0.002,
+                overwrite: 'auto'
+            });
+            
+            gsap.to(camera.position, {
+                z: 30 + scrollY * 0.01,
+                overwrite: 'auto'
+            });
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+
+            // Subtle mouse parallax
+            particles.rotation.x += 0.001 + (targetY * 0.05 - particles.rotation.x) * 0.05;
+            particles.rotation.y += 0.002 + (targetX * 0.05 - particles.rotation.y) * 0.05;
+
+            ring.rotation.z -= 0.001;
+
+            // Breathing effect on vertices
+            const positionAttribute = geometry.attributes.position;
+            for (let i = 0; i < positionAttribute.count; i++) {
+                const ix = i * 3;
+                const iy = i * 3 + 1;
+                const iz = i * 3 + 2;
+
+                const ox = originalPositions[ix];
+                const oy = originalPositions[iy];
+                const oz = originalPositions[iz];
+
+                // Calculate displacement based on sine waves
+                const displacement = Math.sin(time * 2 + ox * 0.5) * Math.cos(time * 1.5 + oy * 0.5) * 0.5;
+
+                positionAttribute.setXYZ(i, 
+                    ox + (ox / 15) * displacement,
+                    oy + (oy / 15) * displacement,
+                    oz + (oz / 15) * displacement
+                );
+            }
+            positionAttribute.needsUpdate = true;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
