@@ -253,10 +253,10 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             width: 100%;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -265,8 +265,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 50px 40px;
-            border-radius: 20px;
+            padding: 30px 25px;
+            border-radius: 15px;
             position: relative;
             overflow: hidden;
             transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -284,38 +284,38 @@
 
         .product-card:hover::after { opacity: 1; transform: translate(10%, 10%); }
         .product-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(239, 68, 68, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(239, 68, 68, 0.1);
         }
 
         .p-image {
-            height: 120px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .p-image img {
-            max-height: 100px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            max-height: 80px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
             transition: 0.5s;
         }
 
         .product-card:hover .p-image img {
-            transform: scale(1.1) translateY(-10px);
+            transform: scale(1.1) translateY(-5px);
         }
 
-        .p-title { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
-        .p-price { font-family: 'Syncopate', sans-serif; font-size: 2.5rem; color: var(--primary); margin-bottom: 30px; }
-        .p-price span { font-size: 1rem; color: var(--text-muted); font-family: 'Outfit', sans-serif; }
+        .p-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+        .p-price { font-family: 'Syncopate', sans-serif; font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
+        .p-price span { font-size: 0.9rem; color: var(--text-muted); font-family: 'Outfit', sans-serif; }
         
-        .p-features { list-style: none; margin-bottom: 40px; }
+        .p-features { list-style: none; margin-bottom: 30px; }
         .p-features li {
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #ccc;
             display: flex;
             align-items: center;
@@ -372,7 +372,7 @@
     <div id="webgl-container"></div>
 
     <nav>
-        <div class="logo">AXC <span>System</span></div>
+        <div class="logo">Anik X <span>Cheats</span></div>
         <div class="nav-links">
             <a href="#store" class="hover-target">Store</a>
             <a href="https://discord.gg/anikxcheats" target="_blank" class="hover-target">Discord</a>
@@ -387,10 +387,10 @@
     <section class="hero">
         <div class="hero-content">
             <h1 class="reveal-text">
-                <span>ABSOLUTE</span><br>
-                <span class="filled">DOMINANCE</span>
+                <span style="font-size: clamp(2.5rem, 6vw, 5rem);">ABSOLUTE</span><br>
+                <span class="filled" style="font-size: clamp(2.5rem, 6vw, 5rem);">DOMINANCE</span>
             </h1>
-            <p class="reveal-text" style="transition-delay: 0.2s;">
+            <p class="reveal-text" style="transition-delay: 0.2s; font-size: 1rem;">
                 <span>Experience the most advanced stealth bypass technology. Engineered for undetectable security in competitive environments.</span>
             </p>
             <div style="margin-top: 40px; opacity: 0; transform: translateY(20px);" class="hero-btn-wrapper">
@@ -408,7 +408,7 @@
                 <div class="product-card hover-target">
                     <div class="p-image">
                         {% if product.image_url %}
-                            <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.name }}">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
                         {% else %}
                             <span style="font-size: 60px;">🔑</span>
                         {% endif %}
