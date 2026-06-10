@@ -1380,9 +1380,33 @@ def admin_delete_product(product_id):
     flash('Product removed from landing page.', 'success')
     return redirect(url_for('admin_products'))
 
+@app.route('/pay/zinipay', methods=['POST'])
+def pay_zinipay():
+    product_id = request.form.get('product_id')
+    products = load_json(PRODUCTS_FILE)
+    product = next((p for p in products if p['id'] == product_id), None)
+    
+    if not product:
+        flash("Product not found.", "error")
+        return redirect(url_for('landing'))
+        
+    settings = get_payment_settings()
+    # In a real scenario, make API request to ZiniPay here.
+    # For now, redirect to the product's external buy link or a placeholder checkout.
+    if product.get('buy_url'):
+        return redirect(product['buy_url'])
+        
+    flash("Payment integration is pending setup. Please contact admin.", "warning")
+    return redirect(url_for('landing'))
+
 @app.route('/admin/settings', methods=['GET', 'POST'])
 @admin_required
 def admin_settings():
+    users = load_json(USERS_FILE)
+    resellers_count = len([u for u in users if not u.get('is_client')])
+    clients_count = len([u for u in users if u.get('is_client')])
+    products_count = len(load_json(PRODUCTS_FILE))
+
     settings = get_payment_settings()
     if request.method == 'POST':
         settings['zinipay_api_key'] = request.form.get('zinipay_api_key', '')
@@ -1414,7 +1438,11 @@ def admin_settings():
         save_dict_json(SETTINGS_FILE, settings)
         flash('Settings updated successfully.', 'success')
         return redirect(url_for('admin_settings'))
-    return render_template('admin_settings.html', settings=settings)
+    return render_template('admin_settings.html', 
+                           settings=settings,
+                           resellers_count=resellers_count,
+                           clients_count=clients_count,
+                           products_count=products_count)
 
 # --- Localization (IP Country Geo Tracking) ---
 
