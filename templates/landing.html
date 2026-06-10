@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anik X Cheats | Premium Stealth Bypass</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Three.js & Vanta for lightweight 3D waves -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.waves.min.js"></script>
+    <!-- Vanilla Tilt for 3D Product Cards -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <style>
         :root {
-            --bg-color: #030303;
+            --bg-color: #000000;
             --primary: #ef4444;
             --primary-glow: rgba(239, 68, 68, 0.7);
             --secondary: #10b981;
             --text-main: #ffffff;
             --text-muted: #9ca3af;
-            --card-bg: rgba(15, 15, 15, 0.7);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(10, 10, 10, 0.4);
+            --card-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -31,37 +34,17 @@
             color: var(--text-main);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(239, 68, 68, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(239, 68, 68, 0.05), transparent 25%);
         }
 
-        /* Pure CSS Animated Grid Background */
-        .cyber-grid {
+        /* 3D Canvas Background */
+        #vanta-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: 
-                linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
             z-index: -2;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 15s linear infinite;
-        }
-
-        .cyber-grid::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 20%, #030303 80%);
-        }
-
-        @keyframes gridMove {
-            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
-            100% { transform: perspective(500px) rotateX(60deg) translateY(50px) translateZ(-200px); }
+            pointer-events: none;
         }
 
         /* Navbar */
@@ -70,7 +53,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 8%;
-            background: rgba(3, 3, 3, 0.8);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
@@ -198,6 +181,7 @@
             -webkit-text-stroke: 1.5px var(--primary);
             background: none;
             display: block;
+            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.5));
         }
 
         .hero-desc {
@@ -227,26 +211,29 @@
             font-size: 16px;
             text-transform: uppercase;
             text-align: center;
+            backdrop-filter: blur(10px);
         }
 
-        /* System Status Card */
+        /* 3D System Status Card */
         .hero-gfx {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
+            perspective: 1000px;
         }
 
         .status-card {
             width: 100%;
             max-width: 450px;
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(10, 10, 10, 0.6);
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(239, 68, 68, 0.05);
             backdrop-filter: blur(20px);
+            transform-style: preserve-3d;
         }
 
         .card-header {
@@ -254,6 +241,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            transform: translateZ(30px);
         }
 
         .card-dot {
@@ -279,16 +267,23 @@
             padding: 15px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
+            transform: translateZ(20px);
+            transition: transform 0.3s;
         }
 
-        .feature-icon { font-size: 24px; }
+        .feature-row:hover {
+            transform: translateZ(40px) scale(1.02);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .feature-icon { font-size: 24px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); }
         .feature-text { font-size: 14px; color: #fff; font-weight: 700; }
         .feature-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 
         /* Store Section */
         .store-section {
             padding: 100px 5%;
-            background: #050505;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,5,5,0.9) 100%);
             position: relative;
             z-index: 10;
             border-top: 1px solid var(--card-border);
@@ -296,10 +291,11 @@
 
         .section-title {
             text-align: center;
-            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
             font-weight: 800;
             text-transform: uppercase;
             margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
         }
 
         .section-subtitle {
@@ -311,68 +307,92 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .product-card {
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
         .p-image {
-            width: 80px; height: 80px;
-            margin: 0 auto 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            width: 120px; height: 120px;
+            margin: 0 auto 25px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
             display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3);
+            transform: translateZ(50px);
         }
 
-        .p-image img { max-width: 50px; max-height: 50px; }
+        .p-image img { 
+            max-width: 80px; 
+            max-height: 80px; 
+            object-fit: contain;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+        }
 
-        .p-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
-        .p-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .p-title { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            color: #fff; 
+            margin-bottom: 10px; 
+            transform: translateZ(30px);
+        }
+        
+        .p-desc { 
+            color: var(--text-muted); 
+            font-size: 0.95rem; 
+            margin-bottom: 20px; 
+            transform: translateZ(20px);
+        }
         
         .p-price {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px var(--primary-glow);
+            transform: translateZ(40px);
         }
-        .p-price span { font-size: 1rem; color: var(--text-muted); }
+        .p-price span { font-size: 1rem; color: var(--text-muted); text-shadow: none; }
 
-        .p-features { list-style: none; margin-bottom: 30px; text-align: left; }
-        .p-features li { color: #d1d5db; font-size: 13px; margin-bottom: 10px; display: flex; gap: 8px; }
-        .p-features li::before { content: '✓'; color: var(--secondary); font-weight: bold; }
+        .p-features { list-style: none; margin-bottom: 35px; text-align: left; transform: translateZ(20px); }
+        .p-features li { color: #d1d5db; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
+        .p-features li::before { content: '✓'; color: var(--secondary); font-weight: bold; font-size: 16px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
 
         .btn-buy {
-            display: block; width: 100%; padding: 14px;
+            display: block; width: 100%; padding: 16px;
             background: linear-gradient(45deg, rgba(239,68,68,0.1), rgba(239,68,68,0.2));
             border: 1px solid rgba(239,68,68,0.5);
-            border-radius: 8px; color: white; text-decoration: none;
+            border-radius: 10px; color: white; text-decoration: none;
             font-weight: 800; text-transform: uppercase; cursor: pointer;
             transition: 0.3s;
+            transform: translateZ(30px);
         }
 
-        .btn-buy:hover { background: var(--primary); }
+        .btn-buy:hover { 
+            background: linear-gradient(45deg, var(--primary), #b91c1c); 
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
 
         /* Features Section */
         .features-section {
             padding: 100px 5%;
-            background: #030303;
+            background: rgba(0,0,0,0.8);
             border-top: 1px solid var(--card-border);
+            position: relative;
+            z-index: 10;
         }
 
         .features-grid {
@@ -386,36 +406,43 @@
         .f-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 30px;
-            border-radius: 16px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            transform-style: preserve-3d;
+            backdrop-filter: blur(10px);
         }
 
         .f-icon {
-            font-size: 35px;
-            margin-bottom: 20px;
+            font-size: 40px;
+            margin-bottom: 25px;
             background: rgba(239, 68, 68, 0.1);
             display: inline-block;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 18px;
+            border-radius: 16px;
             border: 1px solid rgba(239, 68, 68, 0.2);
+            transform: translateZ(30px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.15);
         }
 
-        .f-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
-        .f-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+        .f-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 15px; transform: translateZ(20px); }
+        .f-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; transform: translateZ(10px); }
 
         footer {
-            padding: 30px 5%;
+            padding: 40px 5%;
             background: #000;
             border-top: 1px solid var(--card-border);
             text-align: center;
             color: var(--text-muted);
             font-size: 13px;
+            position: relative;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <div class="cyber-grid"></div>
+    <!-- 3D Canvas Background -->
+    <div id="vanta-canvas"></div>
 
     <nav>
         <div class="logo">AXC <span>System</span></div>
@@ -452,7 +479,7 @@
         </div>
 
         <div class="hero-gfx">
-            <div class="status-card">
+            <div class="status-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.2">
                 <div class="card-header">
                     <div style="display:flex; gap: 8px;">
                         <div class="card-dot"></div>
@@ -502,12 +529,12 @@
         <div class="products-grid">
             {% if products %}
                 {% for product in products %}
-                <div class="product-card">
+                <div class="product-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare="true" data-tilt-max-glare="0.3">
                     <div class="p-image">
                         {% if product.image_url %}
                             <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.name }}">
                         {% else %}
-                            <span style="font-size: 35px;">🔑</span>
+                            <span style="font-size: 50px;">🔑</span>
                         {% endif %}
                     </div>
                     <h3 class="p-title">{{ product.name }}</h3>
@@ -534,9 +561,9 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px; border: 1px dashed var(--card-border); border-radius: 16px;">
-                    <span style="font-size: 40px; opacity: 0.5;">🛒</span>
-                    <h3 style="margin-top: 15px; color: #fff;">Store is Empty</h3>
+                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px; border: 1px dashed var(--card-border); border-radius: 16px; background: rgba(0,0,0,0.5);">
+                    <span style="font-size: 50px; opacity: 0.5;">🛒</span>
+                    <h3 style="margin-top: 15px; color: #fff; font-size: 24px;">Store is Empty</h3>
                     <p>No active products are available at the moment.</p>
                 </div>
             {% endif %}
@@ -547,17 +574,17 @@
     <section class="features-section" id="features">
         <h2 class="section-title">Why Choose <span style="color:var(--primary);">AXC</span></h2>
         <div class="features-grid">
-            <div class="f-card">
+            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
                 <div class="f-icon">🛸</div>
                 <h3 class="f-title">Undetectable</h3>
                 <p class="f-desc">Our proprietary bypass methods operate entirely outside the scope of modern anti-cheat software.</p>
             </div>
-            <div class="f-card">
+            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
                 <div class="f-icon">⚙️</div>
                 <h3 class="f-title">Reseller API</h3>
                 <p class="f-desc">Fully automated API for resellers. Integrate instantly with Sellix, Shoppy, or custom Discord bots.</p>
             </div>
-            <div class="f-card">
+            <div class="f-card" data-tilt data-tilt-max="10" data-tilt-speed="400">
                 <div class="f-icon">🌐</div>
                 <h3 class="f-title">Global Sync</h3>
                 <p class="f-desc">Instant cloud synchronization. Whenever a license is generated or revoked, changes push instantly.</p>
@@ -570,5 +597,23 @@
         <div>© 2026 Anik X Cheats. All rights reserved.</div>
     </footer>
 
+    <!-- Initialize Vanta Waves 3D Background -->
+    <script>
+        VANTA.WAVES({
+            el: "#vanta-canvas",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xef4444,
+            shininess: 30.00,
+            waveHeight: 15.00,
+            waveSpeed: 0.80,
+            zoom: 0.8
+        })
+    </script>
 </body>
 </html>
