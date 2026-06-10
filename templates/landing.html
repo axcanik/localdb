@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anik X Cheats | Premium Stealth Bypass</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Three.js for 3D Graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js"></script>
     <style>
         :root {
             --bg-color: #030303;
@@ -16,7 +13,7 @@
             --secondary: #10b981;
             --text-main: #ffffff;
             --text-muted: #9ca3af;
-            --card-bg: rgba(10, 10, 10, 0.4);
+            --card-bg: rgba(15, 15, 15, 0.7);
             --card-border: rgba(255, 255, 255, 0.08);
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.05);
@@ -34,17 +31,37 @@
             color: var(--text-main);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(239, 68, 68, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(239, 68, 68, 0.05), transparent 25%);
         }
 
-        /* 3D Vanta Background */
-        #vanta-canvas {
+        /* Pure CSS Animated Grid Background */
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            background-image: 
+                linear-gradient(rgba(239, 68, 68, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239, 68, 68, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -2;
-            pointer-events: none;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 15s linear infinite;
+        }
+
+        .cyber-grid::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, #030303 80%);
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px) translateZ(-200px); }
         }
 
         /* Navbar */
@@ -52,26 +69,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background: rgba(3, 3, 3, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            padding: 20px 8%;
+            background: rgba(3, 3, 3, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--card-border);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .logo span {
@@ -82,55 +95,55 @@
         .nav-links {
             display: flex;
             align-items: center;
+            gap: 30px;
         }
 
         .nav-links a {
             color: var(--text-main);
             text-decoration: none;
-            margin-left: 35px;
             font-weight: 600;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:not(.btn-login)::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--primary);
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
-
-        .nav-links a:not(.btn-login):hover::after {
-            width: 100%;
         }
 
         .nav-links a:hover {
             color: var(--primary);
-            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         .btn-login {
             background: linear-gradient(45deg, var(--primary), #b91c1c);
             padding: 10px 24px;
-            border-radius: 8px;
+            border-radius: 6px;
             color: white !important;
             font-weight: 800;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), inset 0 0 10px rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            text-shadow: none !important;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.2s;
         }
 
         .btn-login:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.7), inset 0 0 10px rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(10,10,10,0.95);
+                padding: 20px;
+                border-bottom: 1px solid var(--card-border);
+            }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
         }
 
         /* Hero Section */
@@ -139,22 +152,22 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 8%;
-            margin-top: 60px;
-            perspective: 1200px;
-            position: relative;
+            padding: 120px 8% 60px;
+            gap: 50px;
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 150px;
+            }
         }
 
         .hero-content {
             flex: 1;
-            max-width: 600px;
+            max-width: 650px;
             z-index: 10;
-            animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .badge {
@@ -169,45 +182,38 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 25px;
-            box-shadow: 0 0 15px var(--primary-glow);
-            backdrop-filter: blur(5px);
         }
 
         .hero-title {
-            font-size: 5rem;
+            font-size: clamp(3rem, 5vw, 5rem);
             font-weight: 800;
-            line-height: 1.05;
+            line-height: 1.1;
             margin-bottom: 25px;
             text-transform: uppercase;
-            letter-spacing: -2px;
-        }
-
-        .hero-title span {
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
 
         .hero-title .red-text {
             color: transparent;
-            -webkit-text-stroke: 1.5px rgba(239, 68, 68, 0.8);
-            -webkit-background-clip: none;
+            -webkit-text-stroke: 1.5px var(--primary);
             background: none;
             display: block;
-            filter: drop-shadow(0 0 10px rgba(239,68,68,0.5));
         }
 
         .hero-desc {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-muted);
-            line-height: 1.7;
-            margin-bottom: 45px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            line-height: 1.6;
+            margin-bottom: 40px;
         }
 
         .cta-group {
             display: flex;
             gap: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .cta-group { flex-direction: column; align-items: stretch; }
         }
 
         .btn-secondary {
@@ -216,367 +222,204 @@
             background: rgba(255,255,255,0.05);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 800;
             font-size: 16px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-
-        /* 3D Glassmorphism Hero Card */
-        .hero-3d-wrapper {
+        /* System Status Card */
+        .hero-gfx {
             flex: 1;
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
-            transform-style: preserve-3d;
+            width: 100%;
         }
 
-        .glass-card {
-            width: 480px;
-            height: 580px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            padding: 45px;
-            position: relative;
-            transform: rotateY(-20deg) rotateX(15deg);
-            box-shadow: 
-                -30px 30px 60px rgba(0,0,0,0.9),
-                inset 0 0 0 1px rgba(255,255,255,0.2),
-                inset 0 0 20px rgba(255,255,255,0.05),
-                0 0 60px rgba(239, 68, 68, 0.15);
-            transition: transform 0.1s ease;
-            transform-style: preserve-3d;
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 30px;
-            background: linear-gradient(45deg, transparent, rgba(239,68,68,0.15), transparent);
-            z-index: -1;
-            transform: translateZ(-30px);
-            filter: blur(10px);
+        .status-card {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(239, 68, 68, 0.05);
+            backdrop-filter: blur(20px);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
-            transform: translateZ(40px);
+            margin-bottom: 30px;
         }
 
         .card-dot {
-            width: 14px; height: 14px;
+            width: 12px; height: 12px;
             border-radius: 50%;
             background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
+            box-shadow: 0 0 10px var(--primary);
         }
 
         .card-title {
             font-family: 'JetBrains Mono', monospace;
             color: var(--primary);
-            font-size: 15px;
-            letter-spacing: 3px;
-        }
-
-        .card-body {
-            transform: translateZ(60px);
+            font-size: 14px;
+            letter-spacing: 2px;
         }
 
         .feature-row {
             display: flex;
             align-items: center;
-            gap: 18px;
-            margin-bottom: 28px;
-            background: rgba(0,0,0,0.5);
-            padding: 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.02);
-            transition: all 0.3s ease;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .feature-row:hover {
-            transform: translateZ(20px) scale(1.02);
-            border-color: rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.7);
-        }
+        .feature-icon { font-size: 24px; }
+        .feature-text { font-size: 14px; color: #fff; font-weight: 700; }
+        .feature-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 
-        .feature-icon {
-            font-size: 28px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-        }
-
-        .feature-text {
-            font-size: 15px;
-            color: #fff;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .feature-sub {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 5px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Store / Products Section */
+        /* Store Section */
         .store-section {
-            padding: 100px 8%;
+            padding: 100px 5%;
+            background: #050505;
             position: relative;
             z-index: 10;
-            background: linear-gradient(180deg, transparent, rgba(5,5,5,0.8) 100%);
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid var(--card-border);
         }
 
         .section-title {
             text-align: center;
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 4vw, 3.5rem);
             font-weight: 800;
             text-transform: uppercase;
             margin-bottom: 20px;
-            letter-spacing: 2px;
         }
 
         .section-subtitle {
             text-align: center;
             color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-bottom: 70px;
+            font-size: 1.1rem;
+            margin-bottom: 60px;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-            perspective: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .product-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 40px;
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-            transform-style: preserve-3d;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
         }
 
         .product-card:hover {
-            transform: translateY(-15px) rotateX(5deg);
+            transform: translateY(-10px);
             border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 30px rgba(239, 68, 68, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            opacity: 0;
+        .p-image {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .p-image img { max-width: 50px; max-height: 50px; }
+
+        .p-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .p-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        
+        .p-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .p-price span { font-size: 1rem; color: var(--text-muted); }
+
+        .p-features { list-style: none; margin-bottom: 30px; text-align: left; }
+        .p-features li { color: #d1d5db; font-size: 13px; margin-bottom: 10px; display: flex; gap: 8px; }
+        .p-features li::before { content: '✓'; color: var(--secondary); font-weight: bold; }
+
+        .btn-buy {
+            display: block; width: 100%; padding: 14px;
+            background: linear-gradient(45deg, rgba(239,68,68,0.1), rgba(239,68,68,0.2));
+            border: 1px solid rgba(239,68,68,0.5);
+            border-radius: 8px; color: white; text-decoration: none;
+            font-weight: 800; text-transform: uppercase; cursor: pointer;
             transition: 0.3s;
         }
 
-        .product-card:hover::before { opacity: 1; }
-
-        .p-image {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 25px auto;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .p-image {
-            transform: translateZ(30px) scale(1.1);
-        }
-
-        .p-image img {
-            max-width: 60px;
-            max-height: 60px;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-        }
-
-        .p-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            color: #fff;
-            transform: translateZ(20px);
-        }
-
-        .p-price {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px var(--primary-glow);
-            transform: translateZ(25px);
-        }
-        
-        .p-price span {
-            font-size: 1rem;
-            color: var(--text-muted);
-            text-shadow: none;
-        }
-
-        .p-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            transform: translateZ(15px);
-        }
-
-        .p-features {
-            list-style: none;
-            margin-bottom: 35px;
-            text-align: left;
-            transform: translateZ(10px);
-        }
-
-        .p-features li {
-            margin-bottom: 12px;
-            color: #d1d5db;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .p-features li::before {
-            content: '✓';
-            color: var(--secondary);
-            font-weight: bold;
-            font-size: 16px;
-            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-buy {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            transform: translateZ(30px);
-        }
-
-        .btn-buy:hover {
-            background: linear-gradient(45deg, var(--primary), #b91c1c);
-            box-shadow: 0 0 20px var(--primary-glow);
-            transform: translateZ(30px) scale(1.05);
-        }
+        .btn-buy:hover { background: var(--primary); }
 
         /* Features Section */
         .features-section {
-            padding: 100px 8%;
-            position: relative;
-            z-index: 10;
+            padding: 100px 5%;
+            background: #030303;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .f-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 40px;
-            border-radius: 20px;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(15px);
-            transform-style: preserve-3d;
-        }
-
-        .f-card:hover {
-            transform: translateY(-10px) translateZ(20px);
-            border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(239, 68, 68, 0.1);
+            padding: 30px;
+            border-radius: 16px;
         }
 
         .f-icon {
-            font-size: 45px;
-            margin-bottom: 25px;
-            display: inline-block;
+            font-size: 35px;
+            margin-bottom: 20px;
             background: rgba(239, 68, 68, 0.1);
-            padding: 18px;
-            border-radius: 16px;
+            display: inline-block;
+            padding: 15px;
+            border-radius: 12px;
             border: 1px solid rgba(239, 68, 68, 0.2);
-            box-shadow: 0 0 20px rgba(239,68,68,0.1);
-            transform: translateZ(20px);
         }
 
-        .f-title {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transform: translateZ(15px);
-        }
+        .f-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 15px; }
+        .f-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
 
-        .f-desc {
-            color: var(--text-muted);
-            line-height: 1.7;
-            transform: translateZ(10px);
-        }
-
-        /* Footer */
         footer {
-            padding: 40px 8%;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 10;
+            padding: 30px 5%;
+            background: #000;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- 3D Interactive Background Canvas -->
-    <div id="vanta-canvas"></div>
+    <div class="cyber-grid"></div>
 
     <nav>
-        <div class="logo">Anik X <span>Cheats</span></div>
+        <div class="logo">AXC <span>System</span></div>
+        <div class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</div>
         <div class="nav-links">
             <a href="#store">Store</a>
             <a href="#features">Features</a>
@@ -600,63 +443,61 @@
             </p>
             <div class="cta-group">
                 {% if session.user_id %}
-                    <a href="{{ url_for('dashboard') }}" class="btn-login" style="padding: 18px 40px; font-size: 16px;">Go to Dashboard</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn-login" style="padding: 15px 35px; font-size: 16px; text-align: center;">Go to Dashboard</a>
                 {% else %}
-                    <a href="#store" class="btn-login" style="padding: 18px 40px; font-size: 16px;">View Products</a>
+                    <a href="#store" class="btn-login" style="padding: 15px 35px; font-size: 16px; text-align: center;">View Products</a>
                 {% endif %}
                 <a href="https://discord.gg/anikxcheats" target="_blank" class="btn-secondary">Join Community</a>
             </div>
         </div>
 
-        <div class="hero-3d-wrapper">
-            <div class="glass-card" id="card3d">
+        <div class="hero-gfx">
+            <div class="status-card">
                 <div class="card-header">
-                    <div style="display:flex; gap: 10px;">
+                    <div style="display:flex; gap: 8px;">
                         <div class="card-dot"></div>
-                        <div class="card-dot" style="background:#f59e0b; box-shadow: 0 0 15px #f59e0b;"></div>
-                        <div class="card-dot" style="background:#10b981; box-shadow: 0 0 15px #10b981;"></div>
+                        <div class="card-dot" style="background:#f59e0b;"></div>
+                        <div class="card-dot" style="background:#10b981;"></div>
                     </div>
                     <div class="card-title">SYSTEM_STATUS</div>
                 </div>
                 
-                <div class="card-body">
-                    <div class="feature-row">
-                        <div class="feature-icon">🛡️</div>
-                        <div>
-                            <div class="feature-text">Kernel Level Bypass</div>
-                            <div class="feature-sub">Ring-0 execution and memory masking</div>
-                        </div>
+                <div class="feature-row">
+                    <div class="feature-icon">🛡️</div>
+                    <div>
+                        <div class="feature-text">Kernel Level Bypass</div>
+                        <div class="feature-sub">Ring-0 execution and memory masking</div>
                     </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">⚡</div>
-                        <div>
-                            <div class="feature-text">Ultra-Low Latency</div>
-                            <div class="feature-sub">Optimized for 0ms input delay</div>
-                        </div>
+                </div>
+                <div class="feature-row">
+                    <div class="feature-icon">⚡</div>
+                    <div>
+                        <div class="feature-text">Ultra-Low Latency</div>
+                        <div class="feature-sub">Optimized for 0ms input delay</div>
                     </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🔒</div>
-                        <div>
-                            <div class="feature-text">Polymorphic Engine</div>
-                            <div class="feature-sub">Signature scrambling active</div>
-                        </div>
+                </div>
+                <div class="feature-row">
+                    <div class="feature-icon">🔒</div>
+                    <div>
+                        <div class="feature-text">Polymorphic Engine</div>
+                        <div class="feature-sub">Signature scrambling active</div>
                     </div>
-                    <div class="feature-row" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); box-shadow: inset 0 0 20px rgba(239,68,68,0.1);">
-                        <div class="feature-icon">🟢</div>
-                        <div>
-                            <div class="feature-text" style="color: var(--primary); text-shadow: 0 0 10px var(--primary-glow);">Network Connected</div>
-                            <div class="feature-sub" style="color: #fca5a5;">Syncing with global servers...</div>
-                        </div>
+                </div>
+                <div class="feature-row" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
+                    <div class="feature-icon">🟢</div>
+                    <div>
+                        <div class="feature-text" style="color: var(--primary);">Network Connected</div>
+                        <div class="feature-sub">Syncing with global servers...</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Products / Store Section -->
+    <!-- Store Section -->
     <section class="store-section" id="store">
         <h2 class="section-title">Premium <span style="color:var(--primary);">Access</span></h2>
-        <p class="section-subtitle">Choose the perfect license duration for your needs. Instant delivery upon purchase.</p>
+        <p class="section-subtitle">Choose the perfect license duration. Instant delivery.</p>
         
         <div class="products-grid">
             {% if products %}
@@ -666,7 +507,7 @@
                         {% if product.image_url %}
                             <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.name }}">
                         {% else %}
-                            <span style="font-size: 40px;">🔑</span>
+                            <span style="font-size: 35px;">🔑</span>
                         {% endif %}
                     </div>
                     <h3 class="p-title">{{ product.name }}</h3>
@@ -693,10 +534,10 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px; background: var(--card-bg); border-radius: 20px; border: 1px dashed var(--card-border);">
-                    <div style="font-size: 40px; margin-bottom: 20px; opacity: 0.5;">🛒</div>
-                    <h3 style="font-size: 24px; color: #fff; margin-bottom: 10px;">Store is Empty</h3>
-                    <p>No active products are available at the moment. Please check back later.</p>
+                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px; border: 1px dashed var(--card-border); border-radius: 16px;">
+                    <span style="font-size: 40px; opacity: 0.5;">🛒</span>
+                    <h3 style="margin-top: 15px; color: #fff;">Store is Empty</h3>
+                    <p>No active products are available at the moment.</p>
                 </div>
             {% endif %}
         </div>
@@ -704,90 +545,30 @@
 
     <!-- Features Section -->
     <section class="features-section" id="features">
-        <h2 class="section-title" style="text-align: center; font-size: 3.5rem; margin-bottom: 70px;">Why Choose <span style="color:var(--primary);">AXC</span></h2>
+        <h2 class="section-title">Why Choose <span style="color:var(--primary);">AXC</span></h2>
         <div class="features-grid">
             <div class="f-card">
                 <div class="f-icon">🛸</div>
                 <h3 class="f-title">Undetectable</h3>
-                <p class="f-desc">Our proprietary bypass methods operate entirely outside the scope of modern anti-cheat software, ensuring your accounts remain completely secure at all times.</p>
+                <p class="f-desc">Our proprietary bypass methods operate entirely outside the scope of modern anti-cheat software.</p>
             </div>
             <div class="f-card">
                 <div class="f-icon">⚙️</div>
                 <h3 class="f-title">Reseller API</h3>
-                <p class="f-desc">Fully automated API for resellers. Integrate instantly with Sellix, Shoppy, or custom Discord bots. Manage licenses effortlessly from anywhere.</p>
+                <p class="f-desc">Fully automated API for resellers. Integrate instantly with Sellix, Shoppy, or custom Discord bots.</p>
             </div>
             <div class="f-card">
                 <div class="f-icon">🌐</div>
                 <h3 class="f-title">Global Sync</h3>
-                <p class="f-desc">Instant cloud synchronization. Whenever a license is generated or revoked, changes are pushed globally in less than 300 milliseconds.</p>
+                <p class="f-desc">Instant cloud synchronization. Whenever a license is generated or revoked, changes push instantly.</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <div class="logo" style="font-size: 20px;">AXC <span>SYSTEMS</span></div>
-        <div style="color: var(--text-muted); font-size: 13px;">© 2026 Anik X Cheats. All rights reserved.</div>
+        <div style="font-size: 16px; font-weight: 800; margin-bottom: 10px;">AXC <span style="color:var(--primary);">SYSTEMS</span></div>
+        <div>© 2026 Anik X Cheats. All rights reserved.</div>
     </footer>
 
-    <!-- 3D Card Hover Effect Script -->
-    <script>
-        const card = document.getElementById('card3d');
-        const wrapper = document.querySelector('.hero-3d-wrapper');
-
-        wrapper.addEventListener('mousemove', (e) => {
-            const rect = wrapper.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = ((y - centerY) / centerY) * -20;
-            const rotateY = ((x - centerX) / centerX) * 20;
-
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(30px)`;
-        });
-
-        wrapper.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(15deg) rotateY(-20deg) translateZ(0)`;
-        });
-
-        // Add 3D effect to product cards too
-        const productCards = document.querySelectorAll('.product-card');
-        productCards.forEach(pc => {
-            pc.addEventListener('mousemove', (e) => {
-                const rect = pc.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -10;
-                const rotateY = ((x - centerX) / centerX) * 10;
-                pc.style.transform = `translateY(-15px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-            pc.addEventListener('mouseleave', () => {
-                pc.style.transform = `translateY(0) rotateX(0deg) rotateY(0deg)`;
-            });
-        });
-    </script>
-
-    <!-- Vanta.js 3D Background Initialization -->
-    <script>
-        VANTA.NET({
-            el: "#vanta-canvas",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0xef4444,
-            backgroundColor: 0x030303,
-            points: 12.00,
-            maxDistance: 22.00,
-            spacing: 18.00
-        })
-    </script>
 </body>
 </html>
